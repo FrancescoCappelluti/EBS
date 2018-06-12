@@ -1,0 +1,46 @@
+FC=gfortran
+
+OPT_DEF = -O2 -Wall
+OPT_HIGH = -O3  -unroll -Wall
+OPT_DEBUG = -g  -O0 -Wall -fbounds-check -frange-check
+
+FFLAGS =  $(OPT_DEBUG)
+
+
+
+
+##########################################################
+
+PREFIX=$(PWD)
+MODDIR=$(PREFIX)/modules
+SRCDIR=$(PREFIX)/src
+OBJDIR=$(PREFIX)/objects
+BINDIR=$(PREFIX)/bin
+
+vpath %.x $(BINDIR)
+vpath %.f90 $(SRCDIR)
+vpath %.o $(OBJDIR)
+
+INC=-I$(MODDIR) -I$(MODDIR) 
+
+##########################################################
+
+SANDBOX = Clebsch.x
+MODULES = tools.o 
+
+
+all: $(SANDBOX)
+
+.SUFFIXES:
+.SUFFIXES: .f90 .x .o
+
+%.x : %.o $(OBJECTS)
+	$(FC) $(FFLAGS) -o $(BINDIR)/$@ $(INC) $(OBJDIR)/$< $(addprefix $(OBJDIR)/,$(MODULES)) $(LIBS)
+
+%.o : %.f90
+	$(FC) $(FFLAGS) -c $(INC) $< -o $(OBJDIR)/$@
+
+clean:
+	rm -f $(SANDBOX) $(OBJDIR)/*.o $(MODDIR)/*.mod *~
+
+Clebsch.o: Clebsch.f90 $(MODULES)

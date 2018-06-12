@@ -1,0 +1,19 @@
+%pal nprocs 18 end
+
+! engrad uks b3lyp sv rijcosx grid5 tightscf printbasis slowconv
+
+%scf
+  flipspin 0
+  finalms 5
+  maxiter=1500
+  diismaxeq 40
+  directresetfreq 1
+end
+
+%basis
+  newgto Fe "def2-tzvp" end
+  newgto S "def2-tzvp" end
+end
+
+* xyzfile 0 21 Fe4S4_last_step.xyz
+

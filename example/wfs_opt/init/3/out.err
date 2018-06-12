@@ -1,0 +1,432 @@
+[r039c06s08:44928] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/38180/0/0
+[r039c06s08:44928] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/38180/0
+[r039c06s08:44928] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:44928] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:44928] sess_dir_cleanup: job session dir does not exist
+[r039c06s08:44928] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/38180/0/0
+[r039c06s08:44928] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/38180/0
+[r039c06s08:44928] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:44928] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:44928] mpirun: reset PATH: /cineca/prod/opt/compilers/openmpi/2.1.1/gnu--7.3.0/bin:/cineca/prod/opt/applications/orca/4.0.1/binary/bin:/cineca/prod/opt/compilers/openmpi/2.1.1/gnu--7.3.0/bin:/cineca/prod/opt/compilers/gnu/7.3.0/none/bin:/marconi/home/userexternal/fcappel1/.pyenv/shims:/marconi/home/userexternal/fcappel1/.pyenv/bin:/marconi_work/Pra14_3574/Francesco/bin/orca_4_0_0_linux_x86-64/:/marconi/home/userexternal/fcappel1/ase/bin:/marconi_work/Pra14_3574/LAMMPS/Francesco/lammps/exe:/marconi/home/userexternal/fcappel1/cp2k/exe/Linux-x86-64-gfortran:marconi/home/userexternal/fcappel1/bin:/marconi_work/Pra14_3574/Francesco/bin:/cineca/bin:/usr/lib64/qt-3.3/bin:/cineca/sysprod/pbs/default/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/marconi/home/userexternal/fcappel1/.local/bin:/marconi/home/userexternal/fcappel1/bin
+[r039c06s08:44928] mpirun: reset LD_LIBRARY_PATH: /cineca/prod/opt/compilers/openmpi/2.1.1/gnu--7.3.0/lib:/cineca/prod/opt/compilers/openmpi/2.1.1/gnu--7.3.0/lib:/cineca/prod/opt/compilers/gnu/7.3.0/none/lib64
+[r039c06s08:44928] [[38180,0],0] Releasing job data for [INVALID]
+[r039c06s08:44946] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/38180/1/1
+[r039c06s08:44946] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/38180/1
+[r039c06s08:44946] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:44946] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:44952] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/38180/1/3
+[r039c06s08:44952] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/38180/1
+[r039c06s08:44952] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:44952] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:44958] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/38180/1/5
+[r039c06s08:44958] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/38180/1
+[r039c06s08:44958] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:44958] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:44955] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/38180/1/4
+[r039c06s08:44955] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/38180/1
+[r039c06s08:44955] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:44955] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:44967] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/38180/1/8
+[r039c06s08:44967] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/38180/1
+[r039c06s08:44967] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:44967] tmp: /scratch_local/slurm_job.845610
+  MPIR_being_debugged = 0
+  MPIR_debug_state = 1
+  MPIR_partial_attach_ok = 1
+  MPIR_i_am_starter = 0
+  MPIR_forward_output = 0
+  MPIR_proctable_size = 12
+  MPIR_proctable:
+    (i, host, exe, pid) = (0, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_gtoint_mpi, 44943)
+    (i, host, exe, pid) = (1, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_gtoint_mpi, 44946)
+    (i, host, exe, pid) = (2, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_gtoint_mpi, 44948)
+    (i, host, exe, pid) = (3, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_gtoint_mpi, 44952)
+    (i, host, exe, pid) = (4, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_gtoint_mpi, 44955)
+    (i, host, exe, pid) = (5, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_gtoint_mpi, 44958)
+    (i, host, exe, pid) = (6, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_gtoint_mpi, 44961)
+    (i, host, exe, pid) = (7, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_gtoint_mpi, 44964)
+    (i, host, exe, pid) = (8, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_gtoint_mpi, 44967)
+    (i, host, exe, pid) = (9, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_gtoint_mpi, 44970)
+    (i, host, exe, pid) = (10, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_gtoint_mpi, 44973)
+    (i, host, exe, pid) = (11, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_gtoint_mpi, 44976)
+MPIR_executable_path: NULL
+MPIR_server_arguments: NULL
+[r039c06s08:44976] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/38180/1/11
+[r039c06s08:44976] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/38180/1
+[r039c06s08:44976] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:44976] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:44948] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/38180/1/2
+[r039c06s08:44948] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/38180/1
+[r039c06s08:44948] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:44948] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:44964] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/38180/1/7
+[r039c06s08:44964] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/38180/1
+[r039c06s08:44964] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:44964] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:44970] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/38180/1/9
+[r039c06s08:44970] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/38180/1
+[r039c06s08:44970] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:44970] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:44973] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/38180/1/10
+[r039c06s08:44973] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/38180/1
+[r039c06s08:44973] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:44973] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:44943] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/38180/1/0
+[r039c06s08:44943] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/38180/1
+[r039c06s08:44943] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:44943] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:44961] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/38180/1/6
+[r039c06s08:44961] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/38180/1
+[r039c06s08:44961] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:44961] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:44948] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:44928] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:44961] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:44928] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:44967] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:44928] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:44943] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:44928] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:44973] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:44955] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:44928] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:44928] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:44970] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:44964] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:44928] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:44928] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:44952] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:44946] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:44928] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:44976] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:44928] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:44928] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:44958] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:44928] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:44928] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:44928] sess_dir_cleanup: job session dir does not exist
+exiting with status 0
+[r039c06s08:45057] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/35493/0/0
+[r039c06s08:45057] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/35493/0
+[r039c06s08:45057] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:45057] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:45057] sess_dir_cleanup: job session dir does not exist
+[r039c06s08:45057] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/35493/0/0
+[r039c06s08:45057] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/35493/0
+[r039c06s08:45057] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:45057] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:45057] mpirun: reset PATH: /cineca/prod/opt/compilers/openmpi/2.1.1/gnu--7.3.0/bin:/cineca/prod/opt/applications/orca/4.0.1/binary/bin:/cineca/prod/opt/compilers/openmpi/2.1.1/gnu--7.3.0/bin:/cineca/prod/opt/compilers/gnu/7.3.0/none/bin:/marconi/home/userexternal/fcappel1/.pyenv/shims:/marconi/home/userexternal/fcappel1/.pyenv/bin:/marconi_work/Pra14_3574/Francesco/bin/orca_4_0_0_linux_x86-64/:/marconi/home/userexternal/fcappel1/ase/bin:/marconi_work/Pra14_3574/LAMMPS/Francesco/lammps/exe:/marconi/home/userexternal/fcappel1/cp2k/exe/Linux-x86-64-gfortran:marconi/home/userexternal/fcappel1/bin:/marconi_work/Pra14_3574/Francesco/bin:/cineca/bin:/usr/lib64/qt-3.3/bin:/cineca/sysprod/pbs/default/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/marconi/home/userexternal/fcappel1/.local/bin:/marconi/home/userexternal/fcappel1/bin
+[r039c06s08:45057] mpirun: reset LD_LIBRARY_PATH: /cineca/prod/opt/compilers/openmpi/2.1.1/gnu--7.3.0/lib:/cineca/prod/opt/compilers/openmpi/2.1.1/gnu--7.3.0/lib:/cineca/prod/opt/compilers/gnu/7.3.0/none/lib64
+[r039c06s08:45057] [[35493,0],0] Releasing job data for [INVALID]
+[r039c06s08:45092] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/35493/1/7
+[r039c06s08:45092] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/35493/1
+[r039c06s08:45092] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:45092] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:45088] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/35493/1/6
+[r039c06s08:45088] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/35493/1
+[r039c06s08:45088] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:45088] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:45076] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/35493/1/2
+[r039c06s08:45076] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/35493/1
+[r039c06s08:45076] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:45076] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:45093] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/35493/1/8
+[r039c06s08:45093] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/35493/1
+[r039c06s08:45093] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:45093] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:45073] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/35493/1/1
+[r039c06s08:45073] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/35493/1
+[r039c06s08:45073] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:45073] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:45079] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/35493/1/3
+[r039c06s08:45079] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/35493/1
+[r039c06s08:45079] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:45079] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:45103] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/35493/1/11
+[r039c06s08:45103] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/35493/1
+[r039c06s08:45103] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:45103] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:45085] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/35493/1/5
+[r039c06s08:45085] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/35493/1
+[r039c06s08:45085] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:45085] tmp: /scratch_local/slurm_job.845610
+  MPIR_being_debugged = 0
+  MPIR_debug_state = 1
+  MPIR_partial_attach_ok = 1
+  MPIR_i_am_starter = 0
+  MPIR_forward_output = 0
+  MPIR_proctable_size = 12
+  MPIR_proctable:
+    (i, host, exe, pid) = (0, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_scf_mpi, 45070)
+    (i, host, exe, pid) = (1, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_scf_mpi, 45073)
+    (i, host, exe, pid) = (2, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_scf_mpi, 45076)
+    (i, host, exe, pid) = (3, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_scf_mpi, 45079)
+    (i, host, exe, pid) = (4, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_scf_mpi, 45082)
+    (i, host, exe, pid) = (5, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_scf_mpi, 45085)
+    (i, host, exe, pid) = (6, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_scf_mpi, 45088)
+    (i, host, exe, pid) = (7, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_scf_mpi, 45092)
+    (i, host, exe, pid) = (8, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_scf_mpi, 45093)
+    (i, host, exe, pid) = (9, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_scf_mpi, 45098)
+    (i, host, exe, pid) = (10, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_scf_mpi, 45101)
+    (i, host, exe, pid) = (11, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_scf_mpi, 45103)
+MPIR_executable_path: NULL
+MPIR_server_arguments: NULL
+[r039c06s08:45098] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/35493/1/9
+[r039c06s08:45098] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/35493/1
+[r039c06s08:45098] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:45098] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:45082] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/35493/1/4
+[r039c06s08:45082] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/35493/1
+[r039c06s08:45082] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:45082] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:45070] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/35493/1/0
+[r039c06s08:45070] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/35493/1
+[r039c06s08:45070] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:45070] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:45101] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/35493/1/10
+[r039c06s08:45101] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/35493/1
+[r039c06s08:45101] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:45101] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:45085] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:45082] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:45088] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:45079] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:45103] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:45092] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:45076] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:45093] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:45073] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:45098] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:45070] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:45101] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:45057] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:45057] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:45057] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:45057] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:45057] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:45057] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:45057] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:45057] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:45057] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:45057] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:45057] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:45057] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:45057] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:45057] sess_dir_cleanup: job session dir does not exist
+exiting with status 0
+[r039c06s08:52724] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/63312/0/0
+[r039c06s08:52724] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/63312/0
+[r039c06s08:52724] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:52724] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:52724] sess_dir_cleanup: job session dir does not exist
+[r039c06s08:52724] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/63312/0/0
+[r039c06s08:52724] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/63312/0
+[r039c06s08:52724] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:52724] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:52724] mpirun: reset PATH: /cineca/prod/opt/compilers/openmpi/2.1.1/gnu--7.3.0/bin:/cineca/prod/opt/applications/orca/4.0.1/binary/bin:/cineca/prod/opt/compilers/openmpi/2.1.1/gnu--7.3.0/bin:/cineca/prod/opt/compilers/gnu/7.3.0/none/bin:/marconi/home/userexternal/fcappel1/.pyenv/shims:/marconi/home/userexternal/fcappel1/.pyenv/bin:/marconi_work/Pra14_3574/Francesco/bin/orca_4_0_0_linux_x86-64/:/marconi/home/userexternal/fcappel1/ase/bin:/marconi_work/Pra14_3574/LAMMPS/Francesco/lammps/exe:/marconi/home/userexternal/fcappel1/cp2k/exe/Linux-x86-64-gfortran:marconi/home/userexternal/fcappel1/bin:/marconi_work/Pra14_3574/Francesco/bin:/cineca/bin:/usr/lib64/qt-3.3/bin:/cineca/sysprod/pbs/default/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/marconi/home/userexternal/fcappel1/.local/bin:/marconi/home/userexternal/fcappel1/bin
+[r039c06s08:52724] mpirun: reset LD_LIBRARY_PATH: /cineca/prod/opt/compilers/openmpi/2.1.1/gnu--7.3.0/lib:/cineca/prod/opt/compilers/openmpi/2.1.1/gnu--7.3.0/lib:/cineca/prod/opt/compilers/gnu/7.3.0/none/lib64
+[r039c06s08:52724] [[63312,0],0] Releasing job data for [INVALID]
+[r039c06s08:52729] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/63312/1/0
+[r039c06s08:52729] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/63312/1
+[r039c06s08:52729] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:52729] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:52731] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/63312/1/2
+[r039c06s08:52731] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/63312/1
+[r039c06s08:52731] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:52731] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:52733] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/63312/1/4
+[r039c06s08:52733] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/63312/1
+[r039c06s08:52733] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:52733] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:52735] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/63312/1/6
+[r039c06s08:52735] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/63312/1
+[r039c06s08:52735] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:52735] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:52732] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/63312/1/3
+[r039c06s08:52732] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/63312/1
+[r039c06s08:52732] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:52732] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:52730] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/63312/1/1
+[r039c06s08:52730] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/63312/1
+[r039c06s08:52730] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:52730] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:52737] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/63312/1/8
+[r039c06s08:52737] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/63312/1
+[r039c06s08:52737] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:52737] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:52739] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/63312/1/10
+[r039c06s08:52739] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/63312/1
+[r039c06s08:52739] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:52739] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:52734] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/63312/1/5
+[r039c06s08:52734] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/63312/1
+[r039c06s08:52734] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:52734] tmp: /scratch_local/slurm_job.845610
+  MPIR_being_debugged = 0
+  MPIR_debug_state = 1
+  MPIR_partial_attach_ok = 1
+  MPIR_i_am_starter = 0
+  MPIR_forward_output = 0
+  MPIR_proctable_size = 12
+  MPIR_proctable:
+    (i, host, exe, pid) = (0, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_scfgrad_mpi, 52729)
+    (i, host, exe, pid) = (1, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_scfgrad_mpi, 52730)
+    (i, host, exe, pid) = (2, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_scfgrad_mpi, 52731)
+    (i, host, exe, pid) = (3, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_scfgrad_mpi, 52732)
+    (i, host, exe, pid) = (4, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_scfgrad_mpi, 52733)
+    (i, host, exe, pid) = (5, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_scfgrad_mpi, 52734)
+    (i, host, exe, pid) = (6, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_scfgrad_mpi, 52735)
+    (i, host, exe, pid) = (7, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_scfgrad_mpi, 52736)
+    (i, host, exe, pid) = (8, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_scfgrad_mpi, 52737)
+    (i, host, exe, pid) = (9, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_scfgrad_mpi, 52738)
+    (i, host, exe, pid) = (10, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_scfgrad_mpi, 52739)
+    (i, host, exe, pid) = (11, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_scfgrad_mpi, 52740)
+MPIR_executable_path: NULL
+MPIR_server_arguments: NULL
+[r039c06s08:52738] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/63312/1/9
+[r039c06s08:52738] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/63312/1
+[r039c06s08:52738] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:52738] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:52736] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/63312/1/7
+[r039c06s08:52736] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/63312/1
+[r039c06s08:52736] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:52736] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:52740] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/63312/1/11
+[r039c06s08:52740] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/63312/1
+[r039c06s08:52740] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:52740] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:52735] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:52739] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:52731] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:52733] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:52736] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:52732] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:52738] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:52730] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:52734] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:52740] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:52724] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:52724] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:52724] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:52724] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:52724] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:52724] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:52724] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:52724] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:52724] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:52737] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:52729] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:52724] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:52724] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:52724] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:52724] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:52724] sess_dir_cleanup: job session dir does not exist
+exiting with status 0
+[r039c06s08:53183] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/62747/0/0
+[r039c06s08:53183] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/62747/0
+[r039c06s08:53183] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:53183] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:53183] sess_dir_cleanup: job session dir does not exist
+[r039c06s08:53183] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/62747/0/0
+[r039c06s08:53183] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/62747/0
+[r039c06s08:53183] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:53183] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:53183] mpirun: reset PATH: /cineca/prod/opt/compilers/openmpi/2.1.1/gnu--7.3.0/bin:/cineca/prod/opt/applications/orca/4.0.1/binary/bin:/cineca/prod/opt/compilers/openmpi/2.1.1/gnu--7.3.0/bin:/cineca/prod/opt/compilers/gnu/7.3.0/none/bin:/marconi/home/userexternal/fcappel1/.pyenv/shims:/marconi/home/userexternal/fcappel1/.pyenv/bin:/marconi_work/Pra14_3574/Francesco/bin/orca_4_0_0_linux_x86-64/:/marconi/home/userexternal/fcappel1/ase/bin:/marconi_work/Pra14_3574/LAMMPS/Francesco/lammps/exe:/marconi/home/userexternal/fcappel1/cp2k/exe/Linux-x86-64-gfortran:marconi/home/userexternal/fcappel1/bin:/marconi_work/Pra14_3574/Francesco/bin:/cineca/bin:/usr/lib64/qt-3.3/bin:/cineca/sysprod/pbs/default/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/marconi/home/userexternal/fcappel1/.local/bin:/marconi/home/userexternal/fcappel1/bin
+[r039c06s08:53183] mpirun: reset LD_LIBRARY_PATH: /cineca/prod/opt/compilers/openmpi/2.1.1/gnu--7.3.0/lib:/cineca/prod/opt/compilers/openmpi/2.1.1/gnu--7.3.0/lib:/cineca/prod/opt/compilers/gnu/7.3.0/none/lib64
+[r039c06s08:53183] [[62747,0],0] Releasing job data for [INVALID]
+[r039c06s08:53189] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/62747/1/1
+[r039c06s08:53189] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/62747/1
+[r039c06s08:53189] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:53189] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:53191] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/62747/1/3
+[r039c06s08:53191] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/62747/1
+[r039c06s08:53191] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:53191] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:53190] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/62747/1/2
+[r039c06s08:53190] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/62747/1
+[r039c06s08:53190] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:53190] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:53193] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/62747/1/5
+[r039c06s08:53193] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/62747/1
+[r039c06s08:53193] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:53193] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:53194] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/62747/1/6
+[r039c06s08:53194] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/62747/1
+[r039c06s08:53194] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:53194] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:53196] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/62747/1/8
+[r039c06s08:53196] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/62747/1
+[r039c06s08:53196] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:53196] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:53197] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/62747/1/9
+[r039c06s08:53197] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/62747/1
+[r039c06s08:53197] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:53197] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:53195] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/62747/1/7
+[r039c06s08:53195] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/62747/1
+[r039c06s08:53195] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:53195] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:53192] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/62747/1/4
+[r039c06s08:53192] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/62747/1
+[r039c06s08:53192] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:53192] tmp: /scratch_local/slurm_job.845610
+  MPIR_being_debugged = 0
+  MPIR_debug_state = 1
+  MPIR_partial_attach_ok = 1
+  MPIR_i_am_starter = 0
+  MPIR_forward_output = 0
+  MPIR_proctable_size = 12
+  MPIR_proctable:
+    (i, host, exe, pid) = (0, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_cleanup_mpi, 53188)
+    (i, host, exe, pid) = (1, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_cleanup_mpi, 53189)
+    (i, host, exe, pid) = (2, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_cleanup_mpi, 53190)
+    (i, host, exe, pid) = (3, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_cleanup_mpi, 53191)
+    (i, host, exe, pid) = (4, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_cleanup_mpi, 53192)
+    (i, host, exe, pid) = (5, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_cleanup_mpi, 53193)
+    (i, host, exe, pid) = (6, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_cleanup_mpi, 53194)
+    (i, host, exe, pid) = (7, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_cleanup_mpi, 53195)
+    (i, host, exe, pid) = (8, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_cleanup_mpi, 53196)
+    (i, host, exe, pid) = (9, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_cleanup_mpi, 53197)
+    (i, host, exe, pid) = (10, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_cleanup_mpi, 53198)
+    (i, host, exe, pid) = (11, r039c06s08, /cineca/prod/opt/applications/orca/4.0.1/binary/bin/orca_cleanup_mpi, 53199)
+MPIR_executable_path: NULL
+MPIR_server_arguments: NULL
+[r039c06s08:53198] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/62747/1/10
+[r039c06s08:53198] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/62747/1
+[r039c06s08:53198] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:53198] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:53188] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/62747/1/0
+[r039c06s08:53188] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/62747/1
+[r039c06s08:53188] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:53188] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:53199] procdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/62747/1/11
+[r039c06s08:53199] jobdir: /scratch_local/slurm_job.845610/openmpi-sessions-29530@r039c06s08_0/62747/1
+[r039c06s08:53199] top: openmpi-sessions-29530@r039c06s08_0
+[r039c06s08:53199] tmp: /scratch_local/slurm_job.845610
+[r039c06s08:53195] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:53197] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:53198] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:53194] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:53191] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:53183] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:53183] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:53183] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:53183] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:53183] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:53196] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:53188] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:53190] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:53192] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:53183] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:53183] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:53183] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:53183] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:53199] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:53193] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:53189] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:53183] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:53183] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:53183] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:53183] sess_dir_finalize: proc session dir does not exist
+[r039c06s08:53183] sess_dir_cleanup: job session dir does not exist
+exiting with status 0

@@ -1,0 +1,366 @@
+* Main Program
+
+main.f90
+** Calculate_J
+** Calculate Hamitonian Matrix
+call H_calculate_one_element
+call get_spin_ladder
+** Calculate Total S2
+call S2_calculate_one_element
+** Calculate Spin Multiplicity
+* MODULES
+parameters.f90,  spin_h.f90,  CG_tools.f90, J_SVD.f90, print_tools.f90
+** CG_TOOLS
+*** Calculate_CG
+**** comment
+calculate the occurences of the combination between two different spin, please refer to P.302-303 <Quantum Chemistry> Levine 7th
+Clebsch-Gordan Coefficient is normalization coefficient. Due to the antisymmetry restriction on wavefunction, the wave should be the linear combination of 
+one body wavefunction and then you need to normalize these linear combination to 1. The spin pared wavefunction especially for lower total spin moment cases
+need more linear components. CG coefficient is just the weight coefficient. Also, that's the reason that why DFT and HF are failed to describe system with low spin states(low spin states
+are linear combination of many one body electron wavefunction, so there many determinants in one low spin state wavefunction. DFT and HF are one determinant method, so it can't describe
+low spin states that need many determinants).
+In order to better understand CG coefficient, you can refer to two spin case with singlet and triplet:|j1,j2,J,M> => |1/2,1/2,1,0>, |1/2,1/2,1,-1>, |1/2,1/2,1,1>, |1/2,1/2,0,0>
+
+**** state
+**** jj_list
+**** CG_list
+**** size_list
+*** Calculate_one_CG
+**** v_m1
+**** v_m2
+**** v_j1
+**** v_j2
+**** v_mm
+**** v_jj
+**** d
+** SPIN_H
+*** H_calculate_one_element
+**** comment
+!! ------ Decompose Hamiltonian in Spin Pair terms ----- !!
+!  < L |- J*CG*[(Stot^2 - s1^2 -s2^2)]| R > 
+!  < L |- J*CG*[(Stot^2 - s1^2 -s3^2)]| R > ... 
+!  < L |- J*CG*[(Stot^2 - sn^2 -sn+1^2)]| R >             !            
+!          Sum each term to obtain the result
+!! ----------------------------------------------------- !!
+
+!! ----------------------------------------------------- !!
+!        CONDITION FOR SUMMATION OF THE HALMITONIAN                        
+! <m3_l|m3_r>*...*<mn_l|mn_r>*<m1_l m2_l|- J*CG*[(Stot^2 - s1^2 -s2^2)]|m1_r m2_r>
+! <m2_l|m2_r>*...*<mn_l|mn_r>*<m1_l m3_l|- J*CG*[(Stot^2 - s1^2 -s3^2)]|m1_r m3_r> ...
+! <m1_l|m1_r>*...*<mn-1_l|mn-1_r>*<m_nl mn+1_l|- J*CG*[(Stot^2 - sn^2 -sn+1^2)]|mn_r mn+1_r>
+! Therefore  for the <L| or |R> if m3_l = m3_r implies <m3_l|m3_r> = 1 and 0 otherwise (Dirac delta)
+!! ------------------------------------------------------  !!
+
+This module:
+1. 1st step: construct hamiltonian matrix based on theoretical formula S^2(based on the M values form ORCA) and calculated J values in module J_SVD.
+2. 2nd step: diagonalize the hamitonian matrix to get the spin ladder.
+
+This function generates spin-spin interaction Hamitonian matrix of multiple spin centers system.
+Diagonalisation of this Hamiltonian matrix give the Eigen energies(printed in second column of 
+SpinLadder.out) and Eigenstates(printed in EigenStates.out) of the spin ladder.
+
+**** state_l
+do i=1,Hilbert_Dim
+   do j=1,Hilbert_Dim
+      State_l(:)=Basis_Set(:,i)
+      State_r(:)=Basis_Set(:,j)
+
+**** state_r
+**** spin_array
+same as function get_Basis_Set
+**** J_list
+store the coupling coefficient between pair of spin center.
+Dimension of this array is equal to the number of spin pairs.
+**** H_value
+*** calculate_spinpair_coupling
+**** comment
+(called by H_calculate_one_element)
+!! ----------------------------------------------------- !!
+!                 < state_l| H |state_r>                   !
+!  <s1 m1,s2 m2, ... ,sn mn| H |s1 m1,s2 m2, ... ,sn mn>   
+! H = -2 J*[(s1s2)+(s1s3)+ ... + (s1sn)+(s2s3)+ ... + (snsn+1)] ! 
+! H = - J*CG*[(Stot^2 - s1^2 -s2^2)+ ... + (Stot^2 - sn^2 -sn+1^2)] !
+!  <s1 m1,s2 m2, ... ,sn mn| - J*CG*[(Stot^2 - s1^2 -s2^2)+ ... +(Stot^2 - sn^2 -sn+1^2)] |s1 m1,s2 m2, ... ,sn mn>  !
+!! ----------------------------------------------------- !!
+
+
+!! ----------------------------------------------------- !!
+!  CONDITIONS FOR THE HAMILTONIAN WITH THE COMBINATION OF !
+!      THE STATES (<L|R>) = <S_l,M_l|S_r,M_r>             !
+! IF  M_l = M_r and S_l = S_r  then <S_l,M_l|S_r,M_r> = 1 !
+!! ----------------------------------------------------- !!
+
+
+**** pair_l
+**** pair_r
+**** J_coupling
+calculated by function Calculate_J
+**** val_out
+*** S2_calculate_one_element
+**** comment 
+!! TOT_S2 = SUM S2_i  + 2 * SUM (S_i*S_j)
+!! TOT_S2 = SUM S2_i  +  SUM (S2_tot - S2_i - S2_j)
+!! First Term Only for diagonal elements
+!! Second Term Similar to the Hamiltonian
+!! 
+!! ------ Decompose in Spin Pair terms ----- !!
+!     < L | Stot^2 | R > 
+!  < L | Stot(Stot+1) | R >
+!! ----------------------------------------------------- !!
+
+!! ----------------------------------------------------- !!
+!        CONDITION FOR SUMMATION OF THE SECOND TERM                       
+! <m3_l|m3_r>*...*<mn_l|mn_r>*<m1_l m2_l| Stot^2 |m1_r m2_r>
+! <m2_l|m2_r>*...*<mn_l|mn_r>*<m1_l m3_l| Stot(Stot+1) |m1_r m3_r> ...
+! <m1_l|m1_r>*...*<mn-1_l|mn-1_r>*<m_nl mn+1_l| Stot(Stot+1) |mn_r mn+1_r>
+! Therefore  for the <L| or |R> if m3_l = m3_r implies <m3_l|m3_r> = 1 and 0 otherwise (Dirac delta)
+!! ------------------------------------------------------  !!
+
+This function generates spin square matrix. Rotation of this matrix in Hilbert space gives the Spin 
+square value. Because the spin-spin interaction hamiltonian is a combination spin square hamiltonian,
+eigenstates of spin square hamitonian is a combination eigenstates of spin-spin interaction hamiltonian.
+This spin square value can be used to got the multiplicities(print in 3rd column of 
+SpinLadder.out).
+
+**** state_l
+same as function H_calculate_one_element
+**** state_r
+**** spin_array
+same as function get_Basis_Set
+**** S2_tot
+*** calculate_spinpair_coupling 
+(called by S2_calculate_one_element)
+
+**** comment
+!! ----------------------------------------------------- !!
+!                 < state_l| Stot^2 |state_r>                   !
+!  <s1 m1,s2 m2, ... ,sn mn| Stot^2 |s1 m1,s2 m2, ... ,sn mn>   
+!              Second Term
+! Stot^2 = 2*[(s1s2)+(s1s3)+ ... + (s1sn)+(s2s3)+ ... + (snsn+1)] ! 
+! Stot^2 = CG*[(Stot^2 - s1^2 -s2^2)+ ... + (Stot^2 - sn^2 -sn+1^2)] !
+!  <s1 m1,s2 m2, ... ,sn mn|  CG*[(Stot^2 - s1^2 -s2^2)+ ... +(Stot^2 - sn^2 -sn+1^2)] |s1 m1,s2 m2, ... ,sn mn>  !
+!! ----------------------------------------------------- !!
+
+
+!! ----------------------------------------------------- !!
+!  CONDITIONS FOR THE SPIN TOTAL WITH THE COMBINATION OF !
+!      THE STATES (<L|R>) = <S_l,M_l|S_r,M_r>             !
+! IF  M_l = M_r and S_l = S_r  then <S_l,M_l|S_r,M_r> = 1 !
+!! ----------------------------------------------------- !!
+
+**** pair_l
+**** pair_r
+**** S2_tot
+*** get_Basis_Set
+**** spin_array
+store spin located the four spin centers in 1d array as following:
+[2, 1.5, 1.5, 1.5, 1.5]
+read from M_values.dat and convert spin population calculated by DFT into theoretical spin population.
+**** basis_set
+***** four spin centers:
+2,1.5,1.5,1.5,1.5
+***** S=2 
+spin multiplicity=2*S+1=2*2+1=5
+-2,-1,0,1,2
+***** S=1.5
+spin multiplicity=2*S+1=2*1.5+1=4
+-1.5,-0.5,0.5,1.5
+***** size = number of spin states
+ size=PROD(2*S_i+1)=5*4*4*4=320, basis set is 1d array with 320 values and Hamitonian is 320*320 matrix 
+*****  value
+show last 4 columns in Basis_set.out
+*** get_spin_ladder
+**** H
+Hamitonian Matrix calculated by function H_calculate_one_element
+Detailed refer to SpinHamiltonian.out
+**** energies
+diagonalize above Hamitonian Matrix 
+Detailed refer to SpinLadder.out
+**** states
+diagonalize above Hamitonian Matrix 
+Detailed refer to EigenStates.out 
+**** n
+number of spin states (320)
+*** write_matrix
+**** matrix
+**** cutoff
+**** unit
+** J_SVD
+*** Calculate_J
+**** comment
+Matrix A and BS energies are already known. E=A*J -> J=A^-1*E, so in order to get J we need get A^-1 at first.
+Matrix A is not a square matrix(if it is, we inverse eigen values of Matrix A then get A^-1), so SVD method was 
+needed to get the singular values then inverse singular values to get the A^-1 then A^-1 = (U * Sigma * Vt )^-1 = U * Sigma^-1 * Vt.
+**** energies
+1d array and size is equal to the number of broken symmetry states in M_values.dat. 
+values read from Energies.dat 
+**** A
+multiplified terms M*M
+
+**** M_matrix
+spin population of HS and BS
+Read from M_values.dat
+One dimension of Matrix M is number of BS states.
+One dimension of Matrix M is number of Spin Centers.
+**** M_ave
+calculated spin population ?
+**** J_values
+Detailed refer to #Sigma Diagonal Values in svn_matrixes.out
+size(J_values)=N_Pair=6
+# Spin Center 1 => first column in M_values.dat
+# Spin Center 2 => second column in M_values.dat
+J(1)=coupling between Spin Center 1 and 2
+J(2)=coupling between Spin Center 1 and 3
+J(3)=coupling between Spin Center 1 and 4
+J(4)=coupling between Spin Center 2 and 3
+J(5)=coupling between Spin Center 2 and 4
+J(6)=coupling between Spin Center 3 and 4
+E=J*Mi*Mj=J*A
+One dimension of Matrix A is number of BS states.
+One dimension of Matrix A is number of pairs.
+E and J are one dimension vector. 
+Length of E is Number of BS states.
+Length of J is Number of spin pairs.
+They are different, so matrix A can not be diagonalized. E and A are already known then we need SVD to get J.
+Example are listed in ../test.
+**** N_state
+Number of BS states(8)
+**** N_Center
+Number of spin centers(4)
+**** N_Pair
+Number of spin pair(6)
+**** unit_out
+*** Question:
+1. fatt_au2cm1=219474.63_dp #convert factor between centermeter^-1 and hartree.
+2. A = M_i*M_j/4 #because Sz=M_i/2, M_i is the spin population not spin momentum(projection on Fe atom along z-axis).
+3. why average the spin of different BS states
+** PARAMETERS
+** PRINT_TOOLS
+*** write_matrix
+** FORCE
+*** engradDiffGroundHigh 
+**** comment
+!! ------------------------------------------------------  !!
+!! gradient correction based on BS
+!! ------ Decompose Hamiltonian in Spin Pair terms ----- !!
+!  < L |- ∇J*CG*[(Stot^2 - s1^2 -s2^2)]| R >
+!  < L |- ∇J*CG*[(Stot^2 - s1^2 -s3^2)]| R > ...
+!  < L |- ∇J*CG*[(Stot^2 - sn^2 -sn+1^2)]| R >             !
+!          Sum each term to obtain the result
+!! ----------------------------------------------------- !!
+
+!! ----------------------------------------------------- !!
+!        CONDITION FOR SUMMATION OF THE HALMITONIAN
+! <m3_l|m3_r>*...*<mn_l|mn_r>*<m1_l m2_l|- ∇J*CG*[(Stot^2 - s1^2 -s2^2)]|m1_r m2_r>
+! <m2_l|m2_r>*...*<mn_l|mn_r>*<m1_l m3_l|- ∇J*CG*[(Stot^2 - s1^2 -s3^2)]|m1_r m3_r> ...
+! <m1_l|m1_r>*...*<mn-1_l|mn-1_r>*<m_nl mn+1_l|- ∇J*CG*[(Stot^2 - sn^2 -sn+1^2)]|mn_r mn+1_r>
+! Therefore  for the <L| or |R> if m3_l = m3_r implies <m3_l|m3_r> = 1 and 0 otherwise (Dirac delta)
+!! ------------------------------------------------------  !!
+
+!! ----------------------------------------------------- !!
+!                 < state_l| ∇H |state_r>                   !
+!  <s1 m1,s2 m2, ... ,sn mn| ∇H |s1 m1,s2 m2, ... ,sn mn>   
+!  ∇H = -2 ∇J*[(s1s2)+(s1s3)+ ... + (s1sn)+(s2s3)+ ... + (snsn+1)] ! 
+!  ∇H = - ∇J*CG*[(Stot^2 - s1^2 -s2^2)+ ... + (Stot^2 - sn^2 -sn+1^2)] !
+! <s1 m1,s2 m2, ... ,sn mn| - ∇J*CG*[(Stot^2 - s1^2 -s2^2)+ ... + (Stot^2 - sn^2 -sn+1^2)] |s1 m1,s2 m2, ... ,sn mn>  !
+! <s1 m1,s2 m2, ... ,sn mn| - (∂J/∂E*∇E_bs)*CG*[(Stot^2 - s1^2 -s2^2)+ ... + (Stot^2 - sn^2 -sn+1^2)] |s1 m1,s2 m2, ... ,sn mn>  !
+! <s1 m1,s2 m2, ... ,sn mn| - (A*∇E_bs)*CG*[(Stot^2 - s1^2 -s2^2)+ ... +(Stot^2 - sn^2 -sn+1^2)] |s1 m1,s2 m2, ... ,sn mn>  !
+!! ----------------------------------------------------- !!
+! without BS contributions
+! -SUM_k SUM_p SUM_ij((C^HS_i*C^HS_j-C^GS_i*C^GS_j)<b_i|S^2_p*∂J_p/∂E_k*∇E^BS_k|b_j>)
+! with BS contributions
+! -SUM_k SUM_p SUM_ij((C^HS_i*C^HS_j-C^GS_i*C^GS_j)<b_i|S^2_p*∂J_p/∂E_k|b_j>*∇E^BS_k)
+
+**** state_l
+**** state_r
+**** spin_array
+**** J_coupling_engrad
+SUM(∂J/∂E) by k, ∂J/∂E= A from Calculate_J
+**** GS_HS_engrad_diff
+energy gradient difference between GS and HS
+
+* EXAMPLES
+Demo based on Fe4S4 system.
+** PATH
+../test/
+** Fe2S2
+../test/Fe2S2
+
+julia> hs= -4918.920632958237
+-4918.720632958237
+
+julia> bs= -4918.933473039513 
+
+julia> M12=[3.958738  3.959117
+          3.917976 -3.918286]
+
+#M[1,1] is the spin population(number of els), so the project of spin along z direction of Fe atoms are  Sz = M/2
+#Es = -2 Si * Sj = -2 J * Mi * Mj / 4
+
+julia> J_z=4*(bs-hs)/(2*(M[1,1]*M[1,2]-M[2,1]*M[2,2]))
+-0.0008277286242540534
+
+
+julia> M_hs_ave=sum(M[1,:])/2
+3.9589274999999997
+
+julia> M_bs_ave=sum(abs(M[2,:]))/2
+3.918131
+
+julia> J_z_ave=4*(bs-hs)/(2*(M_hs_ave^2+M_bs_ave^2))
+-0.0008277286226550092
+
+J_z and J_z_ave are consistent with the J value in svd_matrixes.out
+
+julia> s2_bs = 4.772853
+4.772853
+
+julia> s2_hs = 30.026260
+30.02626
+
+# new formulation to calculate J with spin square, this spin square got from ORCA including all spin in Fe and S contrast with the M value only considering the Fe spin projection.
+# the formulation is the same with equation 7th in Bovi's paper. non magnetic orbitals(define in paper:Nair 2008) are corresponding to the orbitals on Sulfur atoms in this case.
+julia> J_s2 = (bs-hs)/(s2_hs-s2_bs)
+-0.0005084494649141185
+
+julia> ls = -4918.937187974774
+-4918.937187974774
+
+# coffecient c in Bovi's paper equation 8th
+c_en = (ls-bs)/(bs-hs)
+
+# c formula based on 9th equation in Bovi's paper
+# Because this formula originated from different formula in our paper, so the c is different.
+s_max = 5 
+s_min = 0 
+theta_bs = s2_bs - 0
+theta_hs = s2_hs - s_max*(s_max+1)
+
+c = (s_max - s_min + theta_bs)/(s_max*(s_max+1)-s_min*(s_min+1)- theta_bs +theta_hs)
+julia> c = 0.38699146614157837
+
+
+ 
+# calculate c by force in Bovi's paper equation 10th
+#
+engrad_ls =  -0.018655268895
+engrad_hs =   0.000019699914
+engrad_bs =  -0.014464617681
+julia> c_engrad =(engrad_ls - engrad_bs)/(engrad_bs-engrad_hs)
+0.2893233448185793
+
+* INPUT
+** M_values.dat
+*** intro
+Broken symmetry states calculated from DFT such as ORCA.
+*** first line
+first value(8)  -> Number of the broken symmetry states
+second value(4) -> Number of the spin centers
+*** following lines
+spin population calculated from DFT
+** Energies.dat
+*** intro
+Energy of broken symmetry states corresponding to M_values.dat
+
+
+

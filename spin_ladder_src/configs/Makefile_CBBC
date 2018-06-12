@@ -1,0 +1,55 @@
+FC=ifort
+
+MKLPATH=/opt/intel/Compiler/11.1/069/mkl/lib/em64t/
+
+OPT_DEF = -O2 -Wall
+OPT_HIGH = -O3  -unroll -warn all -march=pentiumpro -mtune=pentiumpro -pc64
+#OPT_DEBUG = -g  -O0 -Wall -fbounds-check -frange-check
+OPT_DEBUG = -g  -O0 -warn all -check all
+
+
+FFLAGS =  $(OPT_DEBUG)
+
+
+LIBS = -L${MKLPATH}  -lmkl_lapack -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -liomp5 -lpthread
+
+##########################################################
+
+PREFIX=$(PWD)
+MODDIR=$(PREFIX)/modules
+SRCDIR=$(PREFIX)/src
+OBJDIR=$(PREFIX)/objects
+BINDIR=$(PREFIX)/bin
+
+vpath %.x $(BINDIR)
+vpath %.f90 $(SRCDIR)
+vpath %.o $(OBJDIR)
+
+#INC= -I$(MODDIR) -J$(MODDIR) 
+INC=-I$(MODDIR) -module $(MODDIR)
+
+##########################################################
+
+SANDBOX = Spin_Ladder.x
+MODULES = kinds.o tools.o spin_h.o 
+
+
+all: $(SANDBOX)
+
+.SUFFIXES:
+.SUFFIXES: .f90 .x .o
+
+%.x : %.o $(OBJECTS)
+	$(FC) $(FFLAGS) -o $(BINDIR)/$@ $(INC) $(OBJDIR)/$< $(addprefix $(OBJDIR)/,$(MODULES)) $(LIBS)
+
+%.o : %.f90
+	$(FC) $(FFLAGS) $(INC) -c $(SRCDIR)/$*.f90 -o $(OBJDIR)/$*.o
+
+#%.o : %.f90
+#	$(FC) $(FFLAGS) -c $(INC) $< -o $(OBJDIR)/$@
+
+
+clean:
+	rm -f $(BINDIR)/$(SANDBOX) $(OBJDIR)/*.o $(MODDIR)/*.mod *~
+
+Spin_Ladder.o: Spin_Ladder.f90 $(MODULES)

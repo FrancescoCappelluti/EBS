@@ -1,0 +1,50 @@
+FC=gfortran
+
+OPT_DEF = -O2 -Wall
+OPT_HIGH = -O3  -unroll -Wall
+OPT_DEBUG = -g  -O0 -Wall -fbounds-check -frange-check
+
+FFLAGS =  $(OPT_DEBUG)
+
+
+LIBS = -llapack -lblas
+
+##########################################################
+
+PREFIX=$(PWD)
+MODDIR=$(PREFIX)/modules
+SRCDIR=$(PREFIX)/src
+OBJDIR=$(PREFIX)/objects
+BINDIR=$(PREFIX)/bin
+
+vpath %.x $(BINDIR)
+vpath %.f90 $(SRCDIR)
+vpath %.o $(OBJDIR)
+
+INC=-I$(MODDIR) -J$(MODDIR) 
+
+##########################################################
+
+SANDBOX = main.x
+MODULES = parameters.o print_tools.o CG_tools.o J_SVD.o spin_h.o
+
+
+all: $(SANDBOX)
+
+.SUFFIXES:
+.SUFFIXES: .f90 .x .o
+
+%.x : %.o $(OBJECTS)
+	$(FC) $(FFLAGS) -o $(BINDIR)/$@ $(INC) $(OBJDIR)/$< $(addprefix $(OBJDIR)/,$(MODULES)) $(LIBS)
+
+%.o : %.f90
+	$(FC) $(FFLAGS) $(INC) -c $(SRCDIR)/$*.f90 -o $(OBJDIR)/$*.o
+
+#%.o : %.f90
+#	$(FC) $(FFLAGS) -c $(INC) $< -o $(OBJDIR)/$@
+
+
+clean:
+	rm -f $(BINDIR)/$(SANDBOX) $(OBJDIR)/*.o $(MODDIR)/*.mod *~
+
+main.o: main.f90 $(MODULES)

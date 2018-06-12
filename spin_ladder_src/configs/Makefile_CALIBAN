@@ -1,0 +1,56 @@
+################################
+FC=ifort
+
+MKLPATH=/opt/intel/composerxe-2011.4.191/mkl/lib/intel64/
+
+OPT_DEF = -O2 -Wall
+OPT_HIGH = -O3  -unroll -warn all -march=pentiumpro -mtune=pentiumpro -pc64
+#OPT_DEBUG = -g  -O0 -Wall -fbounds-check -frange-check
+OPT_DEBUG = -g  -O0 -warn all -check all
+
+
+FFLAGS =  $(OPT_DEBUG)
+
+
+LIBS = -L${MKLPATH}  -lmkl_lapack95_lp64 -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -liomp5 -lpthread
+
+##########################################################
+
+PREFIX=$(PWD)
+MODDIR=$(PREFIX)/modules
+SRCDIR=$(PREFIX)/src
+OBJDIR=$(PREFIX)/objects
+BINDIR=$(PREFIX)/bin
+
+vpath %.x $(BINDIR)
+vpath %.f90 $(SRCDIR)
+vpath %.o $(OBJDIR)
+
+#INC= -I$(MODDIR) -J$(MODDIR) 
+INC=-I$(MODDIR) -module $(MODDIR)
+
+##########################################################
+
+SANDBOX = Spin_Ladder.x
+MODULES = parameters.o print_tools.o CG_tools.o J_SVD.o spin_h.o force.o
+
+
+all: $(SANDBOX)
+
+.SUFFIXES:
+.SUFFIXES: .f90 .x .o
+
+%.x : %.o $(OBJECTS)
+	$(FC) $(FFLAGS) -o $(BINDIR)/$@ $(INC) $(OBJDIR)/$< $(addprefix $(OBJDIR)/,$(MODULES)) $(LIBS)
+
+%.o : %.f90
+	$(FC) $(FFLAGS) $(INC) -c $(SRCDIR)/$*.f90 -o $(OBJDIR)/$*.o
+
+#%.o : %.f90
+#	$(FC) $(FFLAGS) -c $(INC) $< -o $(OBJDIR)/$@
+
+
+clean:
+	rm -f $(BINDIR)/$(SANDBOX) $(OBJDIR)/*.o $(MODDIR)/*.mod *~
+
+Spin_Ladder.o: main.f90 $(MODULES)

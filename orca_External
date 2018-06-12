@@ -1,0 +1,5 @@
+if [ $PWD == "/something/geo_opt" ]; then
+    python /something/ebs-4nodes.py;
+elif [ $PWD == "/anothersomething/geo_opt" ]; then
+    python /anothersomething/ebs-2nodes.py;
+fi

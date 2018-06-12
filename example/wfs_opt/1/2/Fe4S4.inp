@@ -1,0 +1,19 @@
+%pal nprocs 18 end
+
+! engrad uks b3lyp sv rijcosx grid5 tightscf printbasis slowconv
+
+%scf
+  maxiter=1500
+  diismaxeq 40
+  directresetfreq 1
+  guess moread
+  moinp "Fe4S4_last_step.gbw"
+end
+
+%basis
+  newgto Fe "def2-tzvp" end
+  newgto S "def2-tzvp" end
+end
+
+* xyzfile 0 11 Fe4S4_last_step.xyz
+
