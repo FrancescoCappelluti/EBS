@@ -364,11 +364,13 @@ PROGRAM MAIN
 
            ! call dgemm('N', 'N', Hilbert_Dim, 1, Hilbert_Dim, 1.0_dp, Eigen_States_GS, Hilbert_Dim+1, H_diff_matrix, Hilbert_Dim+1, 0.0_dp, Eigen_States_GS_Mul_H, Hilbert_Dim+1);
 
-           CALL DGEMV( 'N', Hilbert_Dim, Hilbert_Dim, 1.0_dp, H_diff_matrix, Hilbert_Dim, Eigen_States_GS, 1, 0.0_dp, Eigen_States_GS_Mul_H, 1)
+           CALL DGEMV( 'N', Hilbert_Dim, Hilbert_Dim, 1.0_dp, H_diff_matrix, Hilbert_Dim, Eigen_States_GS, 1, 0.0_dp, &
+           Eigen_States_GS_Mul_H, 1)
            force_GS(k)=DOT_PRODUCT(Eigen_States_GS_Mul_H,Eigen_States_GS)
            ! force_GS(k)=DDOT(Hilbert_Dim,Eigen_States_GS,1,Eigen_States_GS_Mul_H,1)
 
-           CALL DGEMV( 'N', Hilbert_Dim, Hilbert_Dim, 1.0_dp, H_diff_matrix, Hilbert_Dim, Eigen_States_HS, 1, 0.0_dp, Eigen_States_HS_Mul_H, 1)
+           CALL DGEMV( 'N', Hilbert_Dim, Hilbert_Dim, 1.0_dp, H_diff_matrix, Hilbert_Dim, Eigen_States_HS, 1, 0.0_dp, &
+           Eigen_States_HS_Mul_H, 1)
            force_HS(k)=DOT_PRODUCT(Eigen_States_HS_Mul_H,Eigen_States_HS)
            ! force_HS(k)=DDOT(Hilbert_Dim,Eigen_States_HS,1,Eigen_States_HS_Mul_H,1)
            BS_contrib(k)=force_HS(k)-force_GS(k)
