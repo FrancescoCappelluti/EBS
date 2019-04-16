@@ -234,7 +234,7 @@ def submit_orca_wfs(iter_step):
         os.chdir(run_dir)
        #clean output files from last steps
         if inp_file not in os.listdir('.'):
-            print "Oops! There is not input file for wfs opt"
+            print("Oops! There is not input file for wfs opt")
         if clean_output and out_file in os.listdir('.'):
             os.remove(out_file)
         if (i=='0' or i=='6'): 
