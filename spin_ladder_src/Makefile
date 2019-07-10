@@ -1,13 +1,23 @@
-FC=gfortran
+#For Cineca's Marconi cluster:
+#For GNU: module load gnu; module load profile/advanced; module load blas/3.6.0--gnu--6.1.0 lapack/3.6.1--gnu--6.1.0
+#For Intel: module load intel/pe-xe-2018--binary; module load blas/3.6.0--intel--pe-xe-2016--binary lapack/3.8.0--intel--pe-xe-2018--binary RUNTIME REQUIRES INTEL MODULE
+#FC=gfortran
+FC=ifort
 
-OPT_DEF = -O2 -Wall
-OPT_HIGH = -O3  -unroll -Wall
-OPT_DEBUG = -g  -O0 -Wall -fbounds-check -frange-check
+#OPT_DEF = -O2 -Wall
+#OPT_DEF = -O2
+#OPT_HIGH = -O3  -unroll -Wall
+OPT_HIGH = -O3  -unroll
+#OPT_DEBUG = -g  -O0 -Wall -fbounds-check -frange-check
+#OPT_DEBUG = -g  -O0
 
 FFLAGS =  $(OPT_DEBUG)
 
 
-LIBS = -llapack -lblas
+#LIBS = -llapack -lblas
+#For Cineca's Marconi cluster:
+#LIBS = /cineca/prod/opt/libraries/lapack/3.6.1/gnu--6.1.0/lib/liblapack.so /cineca/prod/opt/libraries/blas/3.6.0/gnu--6.1.0/lib/libblas.so
+#LIBS = /cineca/prod/opt/libraries/lapack/3.8.0/intel--pe-xe-2018--binary/lib/liblapack.so /cineca/prod/opt/libraries/blas/3.8.0/intel--pe-xe-2018--binary/lib/libblas.so
 
 ##########################################################
 
@@ -21,12 +31,13 @@ vpath %.x $(BINDIR)
 vpath %.f90 $(SRCDIR)
 vpath %.o $(OBJDIR)
 
-INC=-I$(MODDIR) -J$(MODDIR) 
+#INC=-I$(MODDIR) -J$(MODDIR) 
+INC=-I$(MODDIR)
 
 ##########################################################
 
 SANDBOX = main.x
-MODULES = parameters.o print_tools.o CG_tools.o J_SVD.o spin_h.o force.o
+MODULES = parameters.o input.o print_tools.o CG_tools.o J_SVD.o spin_h.o force.o
 
 
 all: $(SANDBOX)
