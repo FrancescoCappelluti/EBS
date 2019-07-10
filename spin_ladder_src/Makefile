@@ -4,17 +4,15 @@
 #FC=gfortran
 FC=ifort
 
-#OPT_DEF = -O2 -Wall
-#OPT_DEF = -O2
-#OPT_HIGH = -O3  -unroll -Wall
-OPT_HIGH = -O3  -unroll
-#OPT_DEBUG = -g  -O0 -Wall -fbounds-check -frange-check
-#OPT_DEBUG = -g  -O0
+OPT_DEF = -O2 -Wall
+OPT_HIGH = -O3  -unroll -Wall
+OPT_HIGH_KNL = -O3  -unroll -xMIC-AVX512
+OPT_DEBUG = -g  -O0 -Wall -fbounds-check -frange-check
 
-FFLAGS =  $(OPT_DEBUG)
+FFLAGS =  $(OPT_HIGH)
 
 
-#LIBS = -llapack -lblas
+LIBS = -llapack -lblas
 #For Cineca's Marconi cluster:
 #LIBS = /cineca/prod/opt/libraries/lapack/3.6.1/gnu--6.1.0/lib/liblapack.so /cineca/prod/opt/libraries/blas/3.6.0/gnu--6.1.0/lib/libblas.so
 #LIBS = /cineca/prod/opt/libraries/lapack/3.8.0/intel--pe-xe-2018--binary/lib/liblapack.so /cineca/prod/opt/libraries/blas/3.8.0/intel--pe-xe-2018--binary/lib/libblas.so
