@@ -1,3 +1,4 @@
+'''Run EBS geometrical optimizations'''
 import sys
 import os
 import time

@@ -1,101 +1,375 @@
-#!/usr/bin/env python
-'''
-
-Orca call orca_External to run python script.
-
-hierarchy directories  to run are as following:
-
-* spin_ladder
-* geo_opt
-** step_init # do normal geometry to generate xyz and gbw file for following wfs_opt, do this by hand
-** 0 #optmization iter_step 0 of main loop
-** 1 #opt iter_step 1 of main loop
-
-* wfs_opt #only  BS and HS states are permited in this path not any other directories.
-** 0 #optmization iter_step 0 of main loop
-*** 0 #HS spin state wfs opt
-*** 1 #BS1 spin state wfs opt
-...
-** 1 #opt iter_step 1 of main loop
-...
-
-
-Precedures:
-* orca_External
-0. get the converged BS states
-1. start_step and total steps
-2. wfs_opt_path and input files including inp.inp, inp_last_step.xyz and inp_last_step.gbw located in wfs_opt_path/start_step.
-   It is better to delete output files from last step.
-   Programming started at wfs_opt_path.
-4. geo_opt_path and input files including inp.inp and inp_last_step.xyz located in geo_opt_path/start_step
-5. out_file
-6. inp_file
-7. interval_time_recheck
-8. waiting_time_wfs_finished
-9. cp orca_wfs.sh spin_ladder.sh and heisenberg.inp to $ROOT
-
-
-* HS state geo optmization under geo_opt/step_init/, cp gbw and xyz to wfs_opt/0/0/...wfs_opt/0/7/
-* BS and HS states inputs under such as wfs_opt/0/0/.../wfs_opt/0/7/ for Fe4S4 case
-
-
-* heisenberg.inp
-set the spin moment
-* orca_S
-* orca_External
-* input file and geometry for geo_opt and wfs_opt
-* iter_step
-
-'''
-import os
 import sys
-import os.path as op
-import delegator
-import shutil
+import os
 import time
-import fnmatch
-import argparse
-from pyparsing import Word, alphas, nums, Regex, Literal, OneOrMore, Combine, CaselessLiteral, Optional, Forward, Or, LineEnd, SkipTo
+import shutil
+import subprocess
 
-start_step = 1 
-root ="maindirectory"
-ORCA_EXE = "pathtoorcaexecutable"
-SPIN_LADDER_EXE="pathtospin_ladder.x"
-wfs_opt_path = "wfs_opt"
-geo_opt_path = "geo_opt"
-spin_ladder_path = "spin_ladder"
-out_file = "Fe4S4.out"
-inp_file = "Fe4S4.inp"
-err_file = "out.err"
-clean_output = True  # clean output files in wfs_opt
-orca_finished_keywords = "ORCA TERMINATED NORMALLY"
-interval_time_recheck = 100
-waiting_time_wfs_finished = 100
-waiting_time_geo_finished = 60
-bs_spin_state = 8
-spin_state_HS = 0
-spin_states = [
-    name
-    for name in os.listdir(op.join(root, wfs_opt_path, str(start_step)))
-    if op.isdir(op.join(root, wfs_opt_path, str(start_step), name))
-]
+SPIN_CENTER = "" #Chemical name of the spin center
+INPUT_NAME = "" #Root of the name of the input file
+                #(es. Fe2S2, without .inp)
+ES_PROGRAM = "orca" #Program for single point calculations, can be
+                    #orca of cp2k (not tested)
+START_STEP = 1
+ROOT = "" #Directory where the calculation is to be run
+ORCA_EXE = "" #Path of Orca executable
+SPIN_LADDER_EXE = "" #Path of spin_ladder executable
+WFS_OPT_PATH = "wfs_opt"
+GEO_OPT_PATH = "geo_opt"
+SPIN_LADDER_PATH = "spin_ladder"
+INTERVAL_TIME_RECHECK = 100
+WAITING_TIME_WFS_FINISHED = 100
+WAITING_TIME_GEO_FINISHED = 60
+SPIN_STATES = [name for name in os.listdir(os.path.join(ROOT, WFS_OPT_PATH,
+                                                        str(START_STEP))) if
+               os.path.isdir(os.path.join(ROOT, WFS_OPT_PATH,
+                                          str(START_STEP), name))]
 
-#########################################
-#parsing section
-SpinCenter = 'Fe'
-# you can set the path of files manually
-orca_out_files_custom = []  # default under $root
-orca_engrad_files_custom = []
+#Convert ES_PROGRAM to lowercase in order to avoid issues
+ES_PROGRAM = ES_PROGRAM.lower()
 
-##########################################
+def parse_energies(iter_step):
+    '''Returns list of energies of each spin state in subfolders of
+       wfs_opt/iter_step'''
+    energies = []
+    for i in sorted(os.listdir(os.path.join(ROOT, WFS_OPT_PATH,
+                                            str(iter_step)))):
+        if os.path.isdir(os.path.join(ROOT, WFS_OPT_PATH,
+                                      str(iter_step), i)):
+            file_obj = open(os.path.join(ROOT, WFS_OPT_PATH,
+                                         str(iter_step), i, INPUT_NAME
+                                         + ".out"), "r")
+            file_list = file_obj.readlines()
+            file_obj.close()
+            for j in reversed(file_list):
+                if ES_PROGRAM == "cp2k":
+                    if "Total energy:" in j:
+                        energies.append(j.split()[-1])
+                        break
+                elif ES_PROGRAM == "orca":
+                    if "FINAL SINGLE POINT ENERGY " in j:
+                        energies.append(j.split()[-1])
+                        break
+    return energies
 
+def print_energies(iter_step):
+    '''Prints Energies.dat in spin_ladder/iter_step'''
+    file_obj = open(os.path.join(ROOT, SPIN_LADDER_PATH, str(iter_step),
+                                 "Energies.dat"), "w")
+    energies = parse_energies(iter_step)
+    for i in energies:
+        file_obj.write(i + "\n")
+    file_obj.close()
+
+def parse_spin_moments(iter_step):
+    '''Returns list of spin moments of spin centers in each spin state
+       in subfolders of wfs_opt/iter_step'''
+    spin_moments = []
+    for i in sorted(os.listdir(os.path.join(ROOT, WFS_OPT_PATH,
+                                            str(iter_step)))):
+        if os.path.isdir(os.path.join(ROOT, WFS_OPT_PATH,
+                                      str(iter_step), i)):
+            if ES_PROGRAM == "cp2k":
+                file_obj = open(os.path.join(ROOT, WFS_OPT_PATH,
+                                             str(iter_step), i,
+                                             INPUT_NAME + ".mulliken"),
+                                "r")
+                file_list = file_obj.readlines()
+                file_obj.close()
+                spin_moments.append([])
+                for j in file_list[5:-3]:
+                    if SPIN_CENTER in j:
+                        spin_moments[-1].append(j.split()[-1])
+                    if "Mulliken Population Analysis" in j:
+                        break
+            elif ES_PROGRAM == "orca":
+                file_obj = open(os.path.join(ROOT, WFS_OPT_PATH,
+                                             str(iter_step), i,
+                                             INPUT_NAME + ".out"),
+                                "r")
+                file_list = file_obj.readlines()
+                file_obj.close()
+                spin_moments.append([])
+                for j in reversed(range(len(file_list))):
+                    if "Sum of atomic charges" in file_list[j]:
+                        bottom_index = j
+                    if "MULLIKEN ATOMIC CHARGES AND SPIN POPULATIONS" \
+                        in file_list[j]:
+                        top_index = j
+                for j in file_list[top_index:bottom_index]:
+                    if SPIN_CENTER in j:
+                        spin_moments[-1].append(j.split()[-1])
+    return spin_moments
+
+def print_spin_moments(iter_step):
+    '''Prints M_values.dat in spin_ladder/iter_step'''
+    file_obj = open(os.path.join(ROOT, SPIN_LADDER_PATH, str(iter_step),
+                                 "M_values.dat"), "w")
+    spin_moments = parse_spin_moments(iter_step)
+    file_obj.write(str(len(spin_moments)) + " " +
+                   str(len(spin_moments[0])) + "\n")
+    for i in spin_moments:
+        file_obj.write("\t".join(i) + "\n")
+    file_obj.close()
+
+def parse_S2(iter_step):
+    '''Returns list of S**2 for each spin state in subfolders of
+       wfs_opt/iter_step'''
+    S2 = []
+    for i in sorted(os.listdir(os.path.join(ROOT, WFS_OPT_PATH,
+                                            str(iter_step)))):
+        if os.path.isdir(os.path.join(ROOT, WFS_OPT_PATH,
+                                      str(iter_step), i)):
+            file_obj = open(os.path.join(ROOT, WFS_OPT_PATH,
+                                         str(iter_step), i, INPUT_NAME
+                                         + ".out"), "r")
+            file_list = file_obj.readlines()
+            file_obj.close()
+            for j in reversed(file_list):
+                if ES_PROGRAM == "cp2k":
+                    if "Ideal and single determinant S**2 :" in j:
+                        S2.append(j.split()[-1])
+                        break
+                elif ES_PROGRAM == "orca":
+                    if "Expectation value of <S**2> " in j:
+                        S2.append(j.split()[-1])
+                        break
+    return S2
+
+def print_S2(iter_step):
+    '''Prints S2.dat in spin_ladder/iter_step'''
+    file_obj = open(os.path.join(ROOT, SPIN_LADDER_PATH,
+                                 str(iter_step), "S2_tot.dat"), "w")
+    S2 = parse_S2(iter_step)
+    for i in S2:
+        file_obj.write(i + "\n")
+    file_obj.close()
+
+def parse_gradients(iter_step):
+    '''Returns list of gradients of each spin state in subfolders of
+       wfs_opt/iter_step'''
+    gradients = []
+    for i in sorted(os.listdir(os.path.join(ROOT, WFS_OPT_PATH,
+                                            str(iter_step)))):
+        if os.path.isdir(os.path.join(ROOT, WFS_OPT_PATH,
+                                      str(iter_step), i)):
+            if ES_PROGRAM == "cp2k":
+                file_obj = open(os.path.join(ROOT, WFS_OPT_PATH,
+                                             str(iter_step), i,
+                                             INPUT_NAME + ".xyz"), "r")
+                file_list = file_obj.readlines()
+                file_obj.close()
+                gradients.append([])
+                for j in file_list[4:-1]:
+                    for k in j.split()[-3:]:
+                        gradients[-1].append(str(-1 * float(k)))
+            elif ES_PROGRAM == "orca":
+                file_obj = open(os.path.join(ROOT, WFS_OPT_PATH,
+                                             str(iter_step), i,
+                                             INPUT_NAME + ".engrad"),
+                                "r")
+                file_list = file_obj.readlines()
+                file_obj.close()
+                gradients.append([])
+                for j, k in enumerate(file_list):
+                    if "The current gradient in Eh/bohr" in k:
+                        top_index = j
+                    elif "The atomic numbers and current coordinates \
+                        in Bohr" in file_list[j]:
+                        bottom_index = j
+                for k in file_list[top_index + 2:bottom_index - 1]:
+                    gradients[-1].append(k.strip())
+    return gradients
+
+def print_gradients(iter_step):
+    '''Prints engrad.dat in spin_ladder/iter_step'''
+    file_obj = open(os.path.join(ROOT, SPIN_LADDER_PATH, str(iter_step),
+                                 "engrad.dat"), "w")
+    gradients = parse_gradients(iter_step)
+    file_obj.write(str(len(gradients)) + " " + str(len(gradients[0]))
+                   + "\n")
+    for i in gradients:
+        file_obj.write("\t".join(i) + "\n")
+    file_obj.close()
+
+def geo_opt_further(iter_step):
+    '''Copy INPUT_NAME.xyz from geo_opt to next iter_step of wfs_opt
+       but first modify it adding indexes for magnetic atoms'''
+    file_obj = open(os.path.join(ROOT, GEO_OPT_PATH, INPUT_NAME
+                                 + ".xyz"), "r")
+    file_list = file_obj.readlines()
+    file_obj.close()
+    counter = 1
+    for i in range(2, len(file_list)):
+        if SPIN_CENTER in file_list[i]:
+            file_list[i] = file_list[i].replace(SPIN_CENTER, SPIN_CENTER
+                                                + str(counter))
+            counter += 1
+    for i in SPIN_STATES:
+        if ES_PROGRAM == "cp2k":
+            file_obj = open(os.path.join(ROOT, WFS_OPT_PATH,
+                                         str(iter_step), str(i),
+                                         INPUT_NAME + "_last_step.xyz"),
+                            "w")
+            for j in file_list:
+                file_obj.write(j)
+            file_obj.close()
+        elif ES_PROGRAM == "orca":
+            shutil.copy(os.path.join(ROOT, GEO_OPT_PATH, INPUT_NAME
+                                     + ".xyz"),
+                        os.path.join(ROOT, WFS_OPT_PATH,
+                                     str(iter_step), str(i), INPUT_NAME
+                                     + "_last_step.xyz"))
+
+def wfs_opt(iter_step):
+    '''Run wfs optimisation on all BS states'''
+    submit_wfs(iter_step)
+    time.sleep(WAITING_TIME_WFS_FINISHED)
+    wfs_opt_next(iter_step)
+    wfs_opt_further(iter_step)
+
+def submit_wfs(iter_step):
+    '''Submits wfs optimisation on all BS states using CP2K'''
+    node_names = open(os.path.join(ROOT, 'machinefile'),
+                      'r').readlines()
+    for i in sorted(SPIN_STATES):
+        run_dir = os.path.join(ROOT, WFS_OPT_PATH, str(iter_step),
+                               str(i))
+        #Print if there is no input file
+        if (INPUT_NAME + ".inp") not in os.listdir(run_dir):
+            print("Oops! There is not input file for wfs opt")
+        else:
+            if (i == '0' or i == '6' or i == '5' or i == '7'):
+                node_name = node_names[0].rstrip()
+                if ES_PROGRAM == "cp2k":
+                    subprocess.call("ssh {} 'cd {}; mpirun -np 18 \
+                                    cp2k.psmp {}.inp > {}.out 2> \
+                                    {}.err &'".format(node_name,
+                                                      run_dir,
+                                                      INPUT_NAME,
+                                                      INPUT_NAME,
+                                                      INPUT_NAME),
+                                    shell=True)
+                elif ES_PROGRAM == "orca":
+                    subprocess.call("ssh {} 'cd {}; {} {}.inp -d -v > \
+                                    {}.out 2> {}.err'".format(
+                                        node_name, run_dir, ORCA_EXE,
+                                        INPUT_NAME, INPUT_NAME, INPUT_NAME),
+                                    shell=True)
+            elif (i == '1' or i == '2' or i == '3' or i == '4'):
+                node_name = node_names[1].rstrip()
+                if ES_PROGRAM == "cp2k":
+                    subprocess.call("ssh {} 'cd {}; mpirun -np 18 \
+                                    cp2k.psmp {}.inp > {}.out 2> \
+                                    {}.err &'".format(node_name,
+                                                      run_dir,
+                                                      INPUT_NAME,
+                                                      INPUT_NAME,
+                                                      INPUT_NAME),
+                                    shell=True)
+                elif ES_PROGRAM == "orca":
+                    subprocess.call("ssh {} 'cd {}; {} {}.inp -d -v > \
+                                     {}.out 2> {}.err'".format(
+                                         node_name, run_dir, ORCA_EXE,
+                                         INPUT_NAME, INPUT_NAME, INPUT_NAME),
+                                    shell=True)
+
+def wfs_opt_next(iter_step):
+    '''Creates folder into next iter_step, copy input files and optimized MOs'''
+    for i in SPIN_STATES:
+        while not wfs_finished_succeed(os.path.join(ROOT, WFS_OPT_PATH,
+                                                    str(iter_step),
+                                                    str(i), INPUT_NAME
+                                                    + ".out")):
+            time.sleep(INTERVAL_TIME_RECHECK)
+        if os.path.isdir(os.path.join(ROOT, WFS_OPT_PATH,
+                                      str(iter_step + 1), str(i))):
+            shutil.rmtree(os.path.join(ROOT, WFS_OPT_PATH,
+                                       str(iter_step + 1), str(i)))
+        os.makedirs(os.path.join(ROOT, WFS_OPT_PATH, str(iter_step + 1),
+                                 str(i)))
+        if ES_PROGRAM == "cp2k":
+            shutil.copy(os.path.join(ROOT, WFS_OPT_PATH, str(iter_step),
+                                     str(i), INPUT_NAME + ".wfn"),
+                        os.path.join(ROOT, WFS_OPT_PATH, str(iter_step
+                                                             + 1),
+                                     str(i), INPUT_NAME
+                                     + "_last_step.wfn"))
+        elif ES_PROGRAM == "orca":
+            shutil.copy(os.path.join(ROOT, WFS_OPT_PATH, str(iter_step),
+                                     str(i), INPUT_NAME + ".gbw"),
+                        os.path.join(ROOT, WFS_OPT_PATH, str(iter_step
+                                                             + 1),
+                                     str(i), INPUT_NAME
+                                     + "_last_step.gbw"))
+        shutil.copy(os.path.join(ROOT, WFS_OPT_PATH, str(iter_step),
+                                 str(i), INPUT_NAME + ".inp"),
+                    os.path.join(ROOT, WFS_OPT_PATH, str(iter_step + 1), str(i),
+                                 INPUT_NAME + ".inp"))
+
+def wfs_opt_further(iter_step):
+    '''Generates M_values.dat, S2.dat, Energies.dat and engrad.dat in
+       spin_ladder/iter_step'''
+    if (os.path.isdir(os.path.join(ROOT, SPIN_LADDER_PATH,
+                                   str(iter_step)))):
+        shutil.rmtree(os.path.join(ROOT, SPIN_LADDER_PATH,
+                                   str(iter_step)))
+    os.makedirs(os.path.join(ROOT, SPIN_LADDER_PATH, str(iter_step)))
+    print_energies(iter_step)
+    print_spin_moments(iter_step)
+    print_S2(iter_step)
+    print_gradients(iter_step)
+
+def wfs_finished_succeed(fullname):
+    '''Return True if CP2K wfs optimization has finished'''
+    file_obj = open(fullname, "r")
+    file_list = file_obj.readlines()
+    file_obj.close()
+    if ES_PROGRAM == "cp2k":
+        return WFS_OPT_PATH in file_list[-1] #WFS_OPT_PATH is because CP2K
+                                             #prints the path of the
+                                             #running directory in his last
+                                             #line
+    elif ES_PROGRAM == "orca":
+        return "ORCA TERMINATED NORMALLY" in file_list[-2]
+    return False
+
+def spin_ladder(iter_step):
+    '''Executes SPIN_LADDER_EXE'''
+    spin_ladder_dir = os.path.join(ROOT, SPIN_LADDER_PATH,
+                                   str(iter_step))
+    os.chdir(spin_ladder_dir)
+    spin_ladder_run = subprocess.call("{} < {}/heisenberg.inp > {} 2> \
+                                      {}".format(SPIN_LADDER_EXE, ROOT,
+                                                 os.path.join(
+                                                     spin_ladder_dir,
+                                                     "spin_ladder.out"),
+                                                 os.path.join(
+                                                     spin_ladder_dir,
+                                                     "spin_ladder.err")),
+                                      shell=True)
+    if spin_ladder_run != 0:
+        raise Exception(spin_ladder_run)
+    else:
+        os.chdir(ROOT)
+        spin_ladder_further(iter_step)
+
+def spin_ladder_further(iter_step):
+    '''Copies GS.extcomp.out to geo_opt'''
+    while not os.path.isfile(os.path.join(ROOT, SPIN_LADDER_PATH,
+                                          str(iter_step),
+                                          "GS.extcomp.out")):
+        time.sleep(INTERVAL_TIME_RECHECK)
+    shutil.copy(os.path.join(ROOT, SPIN_LADDER_PATH,
+                             str(iter_step), "GS.extcomp.out"),
+                os.path.join(ROOT, GEO_OPT_PATH, INPUT_NAME
+                             + ".extcomp.out"))
 
 def main():
-    #
-
-    iter_step_file = open(op.join(root, geo_opt_path, 'iter_step'), 'r')
+    '''Main optimisation step'''
+    iter_step_file = open(os.path.join(ROOT, GEO_OPT_PATH, 'iter_step'),
+                          'r')
     iter_step = int(iter_step_file.readline())
-
+    iter_step_file.close()
     geo_opt_further(iter_step)
     print("Preparing geometry for step " + str(iter_step) + "\n")
     wfs_opt(iter_step)
@@ -103,284 +377,11 @@ def main():
     spin_ladder(iter_step)
     print("Spin Ladder of step               " + str(iter_step) + "\n")
     sys.stdout.flush()
-
-    iter_step = iter_step + 1
-    iter_step_file = open(op.join(root, geo_opt_path, 'iter_step'), 'w')
-    iter_step_file.write("%s" % iter_step)
+    iter_step += 1
+    iter_step_file = open(os.path.join(ROOT, GEO_OPT_PATH, 'iter_step'),
+                          'w')
+    iter_step_file.write(str(iter_step))
     iter_step_file.close()
-
-
-def geo_opt_further(iter_step):
-    # copy xyz from geo_opt to next iter_step of wfs_opt
-    for i in spin_states:
-        shutil.copy(
-            op.join(root, geo_opt_path, inp_file.split('.')[0] + ".xyz"),
-            op.join(root, wfs_opt_path, str(iter_step), str(i),
-                    inp_file.split('.')[0] + "_last_step.xyz"))
-
-
-def spin_ladder(iter_step):
-    #####################################################
-    spin_ladder_dir = op.join(root, spin_ladder_path, str(iter_step))
-    spin_ladder_run = delegator.run('cd ' + spin_ladder_dir  + ';' + SPIN_LADDER_EXE + ' <  ' + root + '/heisenberg.inp > spin_ladder.out 2> spin_ladder.err') 
-    if (spin_ladder_run.return_code != 0):
-        raise Exception(spin_ladder_run.std_err)
-        sys.stdout.flush()
-    else:
-        spin_ladder_further(iter_step)
-
-
-        # spin_ladder_next has been done by wfs_opt_further function.
-def spin_ladder_next(iter_step):
-    if os.path.isdir(op.join(root, spin_ladder_path, str(iter_step + 1))):
-        shutil.rmtree(op.join(root, spin_ladder_path, str(iter_step + 1)))
-    os.makedirs(op.join(root, spin_ladder_path, str(iter_step + 1)))
-
-
-def spin_ladder_further(iter_step):
-    while not os.path.isfile(op.join(root, spin_ladder_path, str(iter_step),
-                                     "GS.extcomp.out")):
-        time.sleep(interval_time_recheck)
-    else:
-        shutil.copy(
-            op.join(root, spin_ladder_path, str(iter_step), "GS.extcomp.out"),
-            op.join(root, geo_opt_path,
-                    inp_file.split('.')[0] + ".extcomp.out"))
-
-
-def wfs_opt(iter_step):
-    #####################################################
-    # wfs opt
-    #run wfs opt on all BS and HS states
-    #clean output files from last steps
-    submit_orca_wfs(iter_step)
-    time.sleep(waiting_time_wfs_finished)
-    wfs_opt_next(iter_step)
-    wfs_opt_further(iter_step)
-
-
-def wfs_opt_next(iter_step):
-    for i in spin_states:
-        while not orca_finished_succeed(op.join(root, wfs_opt_path, str(
-                iter_step), str(i), out_file)):
-            time.sleep(interval_time_recheck)
-
-        #create folder into next iter_step and copy input files
-        if os.path.isdir(op.join(root, wfs_opt_path, str(iter_step + 1), str(
-                i))):
-            shutil.rmtree(op.join(root, wfs_opt_path, str(iter_step + 1), str(
-                i)))
-        os.makedirs(op.join(root, wfs_opt_path, str(iter_step + 1), str(i)))
-        # prepare MOs in current step as MOs in next wfs opt step
-        shutil.copy(
-            op.join(root, wfs_opt_path, str(iter_step), str(i),
-                    inp_file.split('.')[0] + ".gbw"),
-            op.join(root, wfs_opt_path, str(iter_step + 1), str(i),
-                    inp_file.split('.')[0] + "_last_step.gbw"))
-        shutil.copy(
-            op.join(root, wfs_opt_path, str(iter_step), str(i), inp_file),
-            op.join(root, wfs_opt_path, str(iter_step + 1), str(i), inp_file))
-
-
-def wfs_opt_further(iter_step):
-    #generate M_values.dat, engrad.dat, energy.dat
-    if (os.path.isdir(op.join(root, spin_ladder_path, str(iter_step)))):
-        shutil.rmtree(op.join(root, spin_ladder_path, str(iter_step)))
-    os.makedirs(op.join(root, spin_ladder_path, str(iter_step)))
-    parse_parameters(iter_step)
-    write_energies(iter_step)
-    write_engrad(iter_step)
-    write_S2(iter_step)
-    write_spin_moment(iter_step)
-
-
-def parse_parameters(iter_step):
-    global orca_out_files
-    global orca_engrad_files
-    global N_Spin
-    global N_BS
-    global N_Engrad
-
-    orca_out_files = []
-    orca_engrad_files = []
-    orca_engrad_files = sorted(orca_engrad_files_custom or engrad_files_list(
-        op.join(root, wfs_opt_path, str(iter_step))))
-    # clear the output files information from last step
-    orca_out_files = sorted(orca_out_files_custom or output_files_list(op.join(
-        root, wfs_opt_path, str(iter_step))))
-    N_Engrad = len(parseEngrad(orca_engrad_files[0]))
-    N_Spin = len(parseSpinMoment(orca_out_files[0]))
-    N_BS = len(orca_out_files)
-
-
-def orca_finished_succeed(fullname):
-    orca_out = delegator.run('tail ' + '-n 2 ' + fullname + '| head -n 1 ').out #changed '.std_out' in '.out'
-    if orca_finished_keywords in orca_out:
-        return True
-    else:
-        return False
-
-
-def geo_updated(fullname):
-    if (time.time() - os.path.getmtime(fullname)) < waiting_time_wfs_finished:
-        return True
-    else:
-        return False
-
-def submit_orca_wfs(iter_step):
-    node_name = open(op.join(root, 'machinefile')).readlines()
-    for i in sorted(spin_states):
-        run_dir =op.join(root, wfs_opt_path, str(iter_step), str(i)) 
-        os.chdir(run_dir)
-       #clean output files from last steps
-        if inp_file not in os.listdir('.'):
-            print("Oops! There is not input file for wfs opt")
-        if clean_output and out_file in os.listdir('.'):
-            os.remove(out_file)
-        if (i=='0' or i=='6'): 
-                orca_wfs_run_1 = delegator.run("ssh " + node_name[0].rstrip() + " 'cd " + run_dir + "; " + ORCA_EXE + " " + inp_file + " -d -v > " + out_file + " 2> " + err_file + "'", block=False)
-        elif (i=='1' or i=='2'):
-                orca_wfs_run_2 = delegator.run("ssh " + node_name[1].rstrip() + " 'cd " + run_dir + "; " + ORCA_EXE + " " + inp_file + " -d -v > " + out_file + " 2> " + err_file + "'", block=False)
-        elif (i=='3' or i=='4'):
-                orca_wfs_run_3 = delegator.run("ssh " + node_name[2].rstrip() + " 'cd " + run_dir + "; " + ORCA_EXE + " " + inp_file + " -d -v > " + out_file + " 2> " + err_file + "'", block=False)
-        elif (i=='5' or i=='7'):
-                orca_wfs_run_4 = delegator.run("ssh " + node_name[3].rstrip() + " 'cd " + run_dir + "; " + ORCA_EXE + " " + inp_file + " -d -v > " + out_file + " 2> " + err_file + "'", block=False)
-
-
-# M_values.dat
-def parseSpinMoment(orca_out_file):
-    orca_output_stream = open(orca_out_file, "r").read()
-    breakLine = Literal('\n')
-    mullikenStartLine = "MULLIKEN ATOMIC CHARGES AND SPIN POPULATIONS"
-    mullikenEndLine = "--------------------------------------------"
-    point = Literal('.')
-    e = CaselessLiteral('E')
-    plusorminus = Literal('+') | Literal('-')
-    number = Word(nums)
-    integer = Combine(Optional(plusorminus) + number)
-    floatNumber = Combine(integer + point + Optional(number) + Optional(
-        e + integer))
-    charge_spin = OneOrMore(floatNumber)
-    Multinteger = OneOrMore(integer)
-    pattern_mulliken = mullikenStartLine + LineEnd(
-    ) + mullikenEndLine + LineEnd() + SkipTo(mullikenEndLine)
-    mulliken_section = pattern_mulliken.searchString(
-        orca_output_stream).asList()[-1][-1]
-    pattern_spin_center = integer + SpinCenter + ":" + charge_spin + LineEnd()
-    mulliken_spin_center = pattern_spin_center.searchString(
-        mulliken_section).asList()
-    mulliken_spin_population = []
-    for i in mulliken_spin_center:
-        mulliken_spin_population.append(i[4])
-    return mulliken_spin_population
-
-
-# S2_tot.dat
-def parse_spin_square(orca_out_file):
-    orca_output_stream = open(orca_out_file, "r").read()
-    energyStartLine = "Expectation value of <S**2>     :"
-    point = Literal('.')
-    e = CaselessLiteral('E')
-    plusorminus = Literal('+') | Literal('-')
-    number = Word(nums)
-    integer = Combine(Optional(plusorminus) + number)
-    floatNumber = Combine(integer + point + Optional(number) + Optional(
-        e + integer))
-    pattern_en = energyStartLine + floatNumber + LineEnd()
-    pattern_en.searchString(orca_output_stream).asList()[-1][1]
-    return pattern_en.searchString(orca_output_stream).asList()[-1][1].split(
-        '\n')
-
-#engrad.dat
-
-
-def parseEngrad(orca_engrad_file):
-    engrad_output_stream = open(orca_engrad_file, "r").read()
-    breakLine = Literal('\n')
-    engradStartLine = "# The current gradient in Eh/bohr"
-    keywordMeta = Literal('#')
-    nParas = Word(nums)
-    ntrunc = 3
-    point = Literal('.')
-    e = CaselessLiteral('E')
-    plusorminus = Literal('+') | Literal('-')
-    number = Word(nums)
-    integer = Combine(Optional(plusorminus) + number)
-    floatNumber = Combine(integer + point + Optional(number) + Optional(
-        e + integer))
-    engrad_paras = OneOrMore(floatNumber)
-    Multinteger = OneOrMore(integer)
-    pattern_engrad = engradStartLine + LineEnd() + keywordMeta + SkipTo(
-        keywordMeta)
-    return pattern_engrad.searchString(engrad_output_stream).asList()[0][
-        -1].split('\n  ')
-
-
-#Energies.dat
-def parseEn(orca_out_file):
-    orca_output = open(orca_out_file)
-    orca_output_lines = orca_output.readlines()
-    orca_output.close()
-    for i in reversed(orca_output_lines):
-        if "FINAL SINGLE POINT ENERGY" in i:
-            return i.split()[-1]
-
-
-def write_energies(iter_step):
-    thefile = open(
-        op.join(root, spin_ladder_path, str(iter_step), 'Energies.dat'), 'w')
-    for orca_out_file in orca_out_files:
-        thefile.write(parseEn(orca_out_file))
-        thefile.write("\n")
-    thefile.close()
-
-
-def write_engrad(iter_step):
-    thefile = open(
-        op.join(root, spin_ladder_path, str(iter_step), 'engrad.dat'), 'w')
-    thefile.write("%s " % N_BS)
-    thefile.write("%s \n" % N_Engrad)
-    for orca_engrad_file in orca_engrad_files:
-        for i in parseEngrad(orca_engrad_file):
-            thefile.write("%s " % i)
-    thefile.close()
-
-
-def write_S2(iter_step):
-    thefile = open(
-        op.join(root, spin_ladder_path, str(iter_step), 'S2_tot.dat'), 'w')
-    for orca_out_file in orca_out_files:
-        for i in parse_spin_square(orca_out_file):
-            thefile.write("%s " % i)
-            thefile.write("\n")
-    thefile.close()
-
-
-def write_spin_moment(iter_step):
-    thefile = open(
-        op.join(root, spin_ladder_path, str(iter_step), 'M_values.dat'), 'w')
-    thefile.write("%s " % N_BS)
-    thefile.write("%s \n" % N_Spin)
-    for orca_out_file in orca_out_files:
-        for i in parseSpinMoment(orca_out_file):
-            thefile.write("%s " % i)
-        thefile.write("\n")
-    thefile.close()
-
-
-def engrad_files_list(wfs_path):
-    for dirpath, dirnames, filenames in os.walk(wfs_path):
-        for filename in [f for f in filenames if f.endswith(".engrad")]:
-            orca_engrad_files.append(os.path.join(dirpath, filename))
-    return orca_engrad_files
-
-
-def output_files_list(wfs_path):
-    for dirpath, dirnames, filenames in os.walk(wfs_path):
-        for filename in [f for f in filenames if f.endswith(".out")]:
-            orca_out_files.append(os.path.join(dirpath, filename))
-    return orca_out_files
-
 
 if __name__ == "__main__":
     main()

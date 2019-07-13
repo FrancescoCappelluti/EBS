@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --account=
-#SBATCH --nodes=4
+#SBATCH --nodes=2
 #SBATCH --mem=
 #SBATCH --ntasks-per-node=
 #SBATCH --cpus-per-task=1
