@@ -1,5 +1,5 @@
 !/************************************************************************
-PROGRAM MAIN
+PROGRAM SPIN_LADDER
 
   USE PARAMETERS,  ONLY: dp,STDIN,STDOUT,STDERR,fatt_au2cm1
   USE J_SVD,       ONLY: Calculate_J_Ising, Calculate_J_Heisenberg
@@ -413,4 +413,4 @@ write(STDOUT,'(a)')'############## Code Ended ##############'
 
 
 
-END PROGRAM MAIN
+END PROGRAM SPIN_LADDER
