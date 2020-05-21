@@ -7,8 +7,9 @@ import subprocess
 SPIN_CENTER = "" #Chemical name of the spin center
 INPUT_NAME = "" #Root of the name of the input file
                 #(es. Fe2S2, without .inp)
-ES_PROGRAM = "orca" #Program for single point calculations, can be
+ES_PROGRAM = "" #Program for single point calculations, can be
                     #orca of cp2k (not tested)
+CALC_TYPE = '' #Calculation type, can be DFT or MP2 (for double hybrid DFT functionals too)
 START_STEP = 1
 ROOT = "" #Directory where the calculation is to be run
 ORCA_EXE = "" #Path of Orca executable
@@ -16,9 +17,9 @@ SPIN_LADDER_EXE = "" #Path of spin_ladder executable
 WFS_OPT_PATH = "wfs_opt"
 GEO_OPT_PATH = "geo_opt"
 SPIN_LADDER_PATH = "spin_ladder"
-INTERVAL_TIME_RECHECK = 100
-WAITING_TIME_WFS_FINISHED = 100
-WAITING_TIME_GEO_FINISHED = 60
+INTERVAL_TIME_RECHECK = 20
+WAITING_TIME_WFS_FINISHED = 20
+WAITING_TIME_GEO_FINISHED = 10
 SPIN_STATES = [name for name in os.listdir(os.path.join(ROOT, WFS_OPT_PATH,
                                                         str(START_STEP))) if
                os.path.isdir(os.path.join(ROOT, WFS_OPT_PATH,
@@ -51,6 +52,47 @@ def parse_energies(iter_step):
                         break
     return energies
 
+def parse_spin_moments(iter_step):
+        #Returns list of spin moments of spin centers in each spin state in subfolders of wfs_opt/iter_step
+        spin_moments = []
+        for i in sorted(os.listdir(os.path.join(ROOT, WFS_OPT_PATH,
+                                                str(iter_step)))):
+            if os.path.isdir(os.path.join(ROOT, WFS_OPT_PATH,
+                                          str(iter_step), i)):
+                if ES_PROGRAM == "cp2k":
+                    file_obj = open(os.path.join(ROOT, WFS_OPT_PATH,
+                                 str(iter_step), i, INPUT_NAME
+                                 + ".mulliken"), "r")
+                    file_list = file_obj.readlines()
+                    file_obj.close()
+                    spin_moments.append([])
+                    for j in file_list[5:-3]:
+                        if SPIN_CENTER in j:
+                            spin_moments[-1].append(j.split()[-1])
+                        if "Mulliken Population Analysis" in j:
+                            break
+                elif ES_PROGRAM == "orca":
+                    file_obj = open(os.path.join(ROOT, WFS_OPT_PATH,
+                                     str(iter_step), i, INPUT_NAME
+                                     + ".out"), "r")
+                    file_list = file_obj.readlines()
+                    file_obj.close()
+                    spin_moments.append([])
+                    if CALC_TYPE == "MP2":
+                        vpattern = "MULLIKEN ATOMIC CHARGES AND SPIN DENSITIES"
+                    elif CALC_TYPE == "DFT":
+                        vpattern = "MULLIKEN ATOMIC CHARGES AND SPIN POPULATIONS"
+                    for j in reversed(range(len(file_list))):
+                        if "Sum of atomic charges" in file_list[j]:
+                            bottom_index = j
+                        if vpattern in file_list[j]:
+                            top_index = j
+                            break
+                    for j in file_list[top_index:bottom_index]:
+                        if SPIN_CENTER in j:
+                            spin_moments[-1].append(j.split()[-1])
+        return spin_moments
+
 def print_energies(iter_step):
     '''Prints Energies.dat in spin_ladder/iter_step'''
     file_obj = open(os.path.join(ROOT, SPIN_LADDER_PATH, str(iter_step),
@@ -60,45 +102,6 @@ def print_energies(iter_step):
         file_obj.write(i + "\n")
     file_obj.close()
 
-def parse_spin_moments(iter_step):
-    '''Returns list of spin moments of spin centers in each spin state
-       in subfolders of wfs_opt/iter_step'''
-    spin_moments = []
-    for i in sorted(os.listdir(os.path.join(ROOT, WFS_OPT_PATH,
-                                            str(iter_step)))):
-        if os.path.isdir(os.path.join(ROOT, WFS_OPT_PATH,
-                                      str(iter_step), i)):
-            if ES_PROGRAM == "cp2k":
-                file_obj = open(os.path.join(ROOT, WFS_OPT_PATH,
-                                             str(iter_step), i,
-                                             INPUT_NAME + ".mulliken"),
-                                "r")
-                file_list = file_obj.readlines()
-                file_obj.close()
-                spin_moments.append([])
-                for j in file_list[5:-3]:
-                    if SPIN_CENTER in j:
-                        spin_moments[-1].append(j.split()[-1])
-                    if "Mulliken Population Analysis" in j:
-                        break
-            elif ES_PROGRAM == "orca":
-                file_obj = open(os.path.join(ROOT, WFS_OPT_PATH,
-                                             str(iter_step), i,
-                                             INPUT_NAME + ".out"),
-                                "r")
-                file_list = file_obj.readlines()
-                file_obj.close()
-                spin_moments.append([])
-                for j in reversed(range(len(file_list))):
-                    if "Sum of atomic charges" in file_list[j]:
-                        bottom_index = j
-                    if "MULLIKEN ATOMIC CHARGES AND SPIN POPULATIONS" \
-                        in file_list[j]:
-                        top_index = j
-                for j in file_list[top_index:bottom_index]:
-                    if SPIN_CENTER in j:
-                        spin_moments[-1].append(j.split()[-1])
-    return spin_moments
 
 def print_spin_moments(iter_step):
     '''Prints M_values.dat in spin_ladder/iter_step'''
@@ -173,8 +176,7 @@ def parse_gradients(iter_step):
                 for j, k in enumerate(file_list):
                     if "The current gradient in Eh/bohr" in k:
                         top_index = j
-                    elif "The atomic numbers and current coordinates \
-                        in Bohr" in file_list[j]:
+                    elif "The atomic numbers and current coordinates in Bohr" in file_list[j]:
                         bottom_index = j
                 for k in file_list[top_index + 2:bottom_index - 1]:
                     gradients[-1].append(k.strip())
@@ -238,7 +240,7 @@ def submit_wfs(iter_step):
         if (INPUT_NAME + ".inp") not in os.listdir(run_dir):
             print("Oops! There is not input file for wfs opt")
         else:
-            if (i == '0' or i == '6' or i == '5' or i == '7'):
+            if (i == '0' or i == '1'):
                 node_name = node_names[0].rstrip()
                 if ES_PROGRAM == "cp2k":
                     subprocess.call("ssh {} 'cd {}; mpirun -np 18 \
@@ -254,23 +256,6 @@ def submit_wfs(iter_step):
                                     {}.out 2> {}.err'".format(
                                         node_name, run_dir, ORCA_EXE,
                                         INPUT_NAME, INPUT_NAME, INPUT_NAME),
-                                    shell=True)
-            elif (i == '1' or i == '2' or i == '3' or i == '4'):
-                node_name = node_names[1].rstrip()
-                if ES_PROGRAM == "cp2k":
-                    subprocess.call("ssh {} 'cd {}; mpirun -np 18 \
-                                    cp2k.psmp {}.inp > {}.out 2> \
-                                    {}.err &'".format(node_name,
-                                                      run_dir,
-                                                      INPUT_NAME,
-                                                      INPUT_NAME,
-                                                      INPUT_NAME),
-                                    shell=True)
-                elif ES_PROGRAM == "orca":
-                    subprocess.call("ssh {} 'cd {}; {} {}.inp -d -v > \
-                                     {}.out 2> {}.err'".format(
-                                         node_name, run_dir, ORCA_EXE,
-                                         INPUT_NAME, INPUT_NAME, INPUT_NAME),
                                     shell=True)
 
 def wfs_opt_next(iter_step):
@@ -320,7 +305,7 @@ def wfs_opt_further(iter_step):
     print_gradients(iter_step)
 
 def wfs_finished_succeed(fullname):
-    '''Return True if CP2K wfs optimization has finished'''
+    '''Return True if wfs optimization has finished'''
     file_obj = open(fullname, "r")
     file_list = file_obj.readlines()
     file_obj.close()
